@@ -120,7 +120,11 @@ function moveFile(fromPath: string, toPath: string) {
 }
 
 export async function getLink(filePath: string): Promise<string> {
-  const browser = await puppeteer.launch({ headless: true, slowMo: 250 });
+  const browser = await puppeteer.launch({
+    headless: true,
+    slowMo: 250,
+    args: ['--no-sandbox'],
+  });
   const page = await browser.newPage();
   await page.goto('https://dropmefiles.com/', {
     waitUntil: 'networkidle0',
@@ -186,7 +190,11 @@ export function downloadFromTorrent(fileTorrent: string) {
 export async function downloadDropFiles(url: string, tempFolder: number) {
   fs.rmSync(`./downloads/${tempFolder}/`, { recursive: true, force: true });
 
-  const browser = await puppeteer.launch({ headless: true, slowMo: 250 });
+  const browser = await puppeteer.launch({
+    headless: true,
+    slowMo: 250,
+    args: ['--no-sandbox'],
+  });
   const page = await browser.newPage();
   await page.goto(url, {
     waitUntil: 'networkidle0',
