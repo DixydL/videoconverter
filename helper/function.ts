@@ -59,7 +59,7 @@ export async function runStart(fileInput: string) {
   await new Promise((resolve, reject) => {
     ffmpeg(fs.createReadStream(fileInput), options)
       .output(filePath, { end: true })
-      .videoCodec('libx265')
+      .videoCodec('libx264')
       .addOptions(['-crf 27', '-preset superfast', '-vf subtitles=./temp.ass'])
       .size('1920x?')
       .on('end', () => {
