@@ -45,6 +45,7 @@ export async function runStart(fileInput: string) {
         resolve('done');
       })
       .on('error', (progress: any) => {
+        console.log(progress);
         reject(new Error('mkv немає субтитрів'));
       })
       .noAudio()
@@ -63,6 +64,11 @@ export async function runStart(fileInput: string) {
       .size('1920x?')
       .on('end', () => {
         console.log('Finished processing'), resolve('done');
+      })
+      .on('error', (progress: any) => {
+        console.log(progress);
+
+        reject(new Error('mkv немає субтитрів'));
       })
       .on('progress', (progress: any) => {
         console.log(progress);
