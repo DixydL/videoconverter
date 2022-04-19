@@ -62,12 +62,20 @@ export async function runStart(
       .run();
   });
 
-  if (sub && !(fs.existsSync(`./input/${filename}.ass`))) {
+  if (sub && !fs.existsSync(`./input/${filename}.ass`)) {
     args.push('-vf subtitles=./temp.ass');
   }
 
   if (fs.existsSync(`./input/${filename}.ass`)) {
-    args.push(`-vf subtitles=./input/${filename}.ass`);
+    fs.rmSync('./temp.ass', {
+      force: true,
+    });
+
+    await sleep(2000);
+
+    fs.renameSync(`./input/${filename}.ass`, `./temp.ass`);
+
+    args.push(`-vf subtitles=./temp.ass`);
   }
 
   const filePath = `./output/${filename}[InariDuB].mp4`;
