@@ -40,7 +40,7 @@ const options = {
 
 export async function runStart(
   fileInput: string,
-  nameFile: string = "test.mkv",
+  nameFile: string = 'test.mkv',
   sub = false
 ) {
   let args = ['-crf 26', '-preset fast'];
@@ -64,6 +64,10 @@ export async function runStart(
 
   if (sub) {
     args.push('-vf subtitles=./temp.ass');
+  }
+
+  if (fs.existsSync(`./input/${filename}.ass`)) {
+    args.push(`-vf subtitles=./input/${filename}.ass`);
   }
 
   const filePath = `./output/${filename}[InariDuB].mp4`;
