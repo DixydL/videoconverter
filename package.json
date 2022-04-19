@@ -1,7 +1,9 @@
 {
   "scripts": {
     "compile": "tsc && node dist/app.js",
-    "dev": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile\""
+    "compile_converter": "tsc && node dist/convert.js",
+    "dev": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile\"",
+    "converter": "npm run compile_converter"
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",

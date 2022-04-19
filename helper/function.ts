@@ -38,8 +38,14 @@ const options = {
   logger,
 };
 
-export async function runStart(fileInput: string, sub = false) {
+export async function runStart(
+  fileInput: string,
+  nameFile: string = "test.mkv",
+  sub = false
+) {
   let args = ['-crf 26', '-preset fast'];
+
+  const [filename, ext] = nameFile.split('.');
 
   sub = await new Promise((resolve, reject) => {
     ffmpeg(fs.createReadStream(fileInput), options)
@@ -60,7 +66,7 @@ export async function runStart(fileInput: string, sub = false) {
     args.push('-vf subtitles=./temp.ass');
   }
 
-  const filePath = `./video/${randomstring.generate()}.mp4`;
+  const filePath = `./output/${filename}[InariDuB].mp4`;
 
   await new Promise((resolve, reject) => {
     ffmpeg(fs.createReadStream(fileInput), options)
@@ -82,7 +88,7 @@ export async function runStart(fileInput: string, sub = false) {
       .run();
   });
 
-  return await getLink(filePath);
+  return filePath;
 }
 
 function checkExistsWithTimeout(

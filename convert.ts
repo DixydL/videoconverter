@@ -1,12 +1,12 @@
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
-import { Context, Telegraf } from 'telegraf';
+var path = require('path');
 import { findFileByExt, runStart } from './helper/function';
 
 (async () => {
-  const files = findFileByExt(`./downloads/input/`, 'mkv');
+  const files = findFileByExt(`./input/`, 'mkv');
   for (const file of files) {
-    const link = await runStart(file).catch(() => {
+    const link = await runStart(file, path.basename(file)).catch(() => {
         console.log("error");
     });
   }
