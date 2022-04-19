@@ -62,7 +62,7 @@ export async function runStart(
       .run();
   });
 
-  if (sub) {
+  if (sub && !(fs.existsSync(`./input/${filename}.ass`))) {
     args.push('-vf subtitles=./temp.ass');
   }
 
