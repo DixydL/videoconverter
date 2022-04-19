@@ -20,28 +20,28 @@ const bot = new Telegraf<MyContext>(
 
 bot.start((ctx) => ctx.reply('Скиньте файл'));
 
-bot.on('document', (ctx) => {
-  console.log(ctx.message);
+// bot.on('document', (ctx) => {
+//   console.log(ctx.message);
 
-  ctx.telegram
-    .getFileLink(ctx.message.document.file_id)
-    .then((url) => {
-      downloadTelegram(url).then((response) => {
-        //downloadFromTorrent(response);
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  // Explicit usage
-  ctx.telegram.sendMessage(ctx.message.chat.id, `Hello ${ctx.state.role}`);
+//   ctx.telegram
+//     .getFileLink(ctx.message.document.file_id)
+//     .then((url) => {
+//       downloadTelegram(url).then((response) => {
+//         //downloadFromTorrent(response);
+//       });
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+//   // Explicit usage
+//   ctx.telegram.sendMessage(ctx.message.chat.id, `Hello ${ctx.state.role}`);
 
-  // Using context shortcut
-  ctx.reply(`Hello ${ctx.state.role}`);
-});
+//   // Using context shortcut
+//   ctx.reply(`Hello ${ctx.state.role}`);
+// });
 
 bot.on('text', async (ctx) => {
-  ctx.reply(`Почалося перетворення відео`);
+  ctx.reply(`Відео завантажується з fex`);
 
   console.log(ctx.message);
 
@@ -54,6 +54,9 @@ bot.on('text', async (ctx) => {
         console.log(err);
       });
 
+      ctx.reply(`Почалося кодування відео це займе деякий час`);
+
+
       if (!file) {
         throw Error('error');
       }
@@ -62,7 +65,7 @@ bot.on('text', async (ctx) => {
         ctx.reply('mkv немає субтитрів');
       });
 
-      ctx.reply(`Успішно ваще посилання: ${link} `);
+      ctx.reply(`Успішно, посилання на файл: ${link} `);
     })().catch(() => {
       ctx.reply('Сталася помилка спробуйте ще раз');
     });

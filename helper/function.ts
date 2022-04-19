@@ -13,7 +13,7 @@ export async function sleep(ms: number) {
   });
 }
 
-function findFileByExt(folderPath: string, ext: string) {
+export function findFileByExt(folderPath: string, ext: string) {
   var files = fs.readdirSync(folderPath);
   var result: string[] = [];
 
@@ -38,15 +38,17 @@ const options = {
   logger,
 };
 
-export async function runStart(fileInput: string) {
-  await new Promise((resolve, reject) => {
+export async function runStart(fileInput: string, sub = false) {
+  let args = ['-crf 26', '-preset fast'];
+
+  sub = await new Promise((resolve, reject) => {
     ffmpeg(fs.createReadStream(fileInput), options)
       .on('end', () => {
-        resolve('done');
+        resolve(true);
       })
       .on('error', (progress: any) => {
         console.log(progress);
-        reject(new Error('mkv немає субтитрів'));
+        resolve(false);
       })
       .noAudio()
       .noVideo()
@@ -54,13 +56,17 @@ export async function runStart(fileInput: string) {
       .run();
   });
 
+  if (sub) {
+    args.push('-vf subtitles=./temp.ass');
+  }
+
   const filePath = `./video/${randomstring.generate()}.mp4`;
 
   await new Promise((resolve, reject) => {
     ffmpeg(fs.createReadStream(fileInput), options)
       .output(filePath, { end: true })
       .videoCodec('libx264')
-      .addOptions(['-crf 27', '-preset superfast', '-vf subtitles=./temp.ass'])
+      .addOptions(args)
       .size('1920x?')
       .on('end', () => {
         console.log('Finished processing'), resolve('done');
@@ -132,31 +138,58 @@ export async function getLink(filePath: string): Promise<string> {
     args: ['--no-sandbox'],
   });
   const page = await browser.newPage();
-  await page.goto('https://dropmefiles.com/', {
+  await page.goto('https://fex.net/uk/a', {
     waitUntil: 'networkidle0',
     timeout: 30000,
   });
 
-  const [fileChooser] = await Promise.all([
-    page.waitForFileChooser(),
-    page.click("[id='browse_btn_x']"),
-  ]);
+  await page.click(
+    'button.button.button_theme_primary.button_type_cookies-policy-notification'
+  );
+  //await page.click('#root > div > div > div.dir-menu > div > div:nth-child(2) > div.dir-menu-controls__item.dir-menu-controls__item_type_upload > div > button');
+  await sleep(3000);
 
-  await fileChooser.accept([filePath]);
+  await page.waitForSelector('input[type=file]');
+  const fileInput = await page.$('div > input[type=file]');
+  await fileInput?.uploadFile(filePath);
+
+  ///trigger event
+  await fileInput?.evaluate((upload) =>
+    upload.dispatchEvent(new Event('change', { bubbles: true }))
+  );
+
+  //   await page.focus('#root > div > div > div.layout__position-relative.container.container_width_primary.flex.flex_direction_col.flex__grow-1.margin_bottom_25.container_min-height_476 > div.drop-zone > div > span')
+  //   const [fileChooser] = await Promise.all([
+  //     page.waitForFileChooser(),
+  //     page.tap(
+  //       '#root > div > div > div.layout__position-relative.container.container_width_primary.flex.flex_direction_col.flex__grow-1.margin_bottom_25.container_min-height_476 > div.drop-zone > div > span',
+  //     ),
+  //   ]);
+
+  //   await fileChooser.accept([filePath]);
 
   await sleep(3000);
 
-  const link = await (
-    await page.$('div.link')
-  )?.$eval('a.url', (node: any) => node.getAttribute('href'));
-
   await page.waitFor(
     () => {
-      const element = document.querySelector('div.percent');
-      return element && element.textContent === 'загружено';
+      const element = document.querySelector(
+        'section > button.button.button_theme_primary.button_size_normal > span.button__text'
+      );
+      return element && element.textContent === 'Скопіювати посилання';
     },
-    { timeout: 36000 }
+    { timeout: 360000 }
   );
+
+  const link = await (
+    await page.$(
+      'div.shared-link-box.shared-link-box_theme_secondary.color_background_1d1d1d.padding_all_10'
+    )
+  )?.$eval(
+    'input.input.shared-link-box__hidden-field',
+    (node: any) => node.value
+  );
+
+  console.log('успіх', link);
 
   await browser.close();
 
@@ -213,17 +246,63 @@ export async function downloadDropFiles(url: string, tempFolder: number) {
     downloadPath: `./downloads/${tempFolder}/`,
   });
 
-  await page.click('.download_btn');
+  sleep(5000);
 
-  sleep(2000);
+  const atrribute = await (
+    await page.$(
+      '#root > div > div > div.layout__position-relative.container.container_width_primary.flex.flex_direction_col.flex__grow-1.margin_bottom_25.container_min-height_476 > div > div > div:nth-child(2) > div > div > div > div.fs-table__item.fs-table__item_type_file.fs-table__item_type_adsense > div.fs-table__controls > div > div.node-controls__item.node-controls__item_type_download > div'
+    )
+  )?.$eval('button.button.button_type_node-control', (node: any) =>
+    node.getAttribute('data-download-url')
+  );
 
-  const files = findFileByExt(`./downloads/${tempFolder}/`, 'crdownload');
+  console.log(atrribute);
+
+  //   await page.waitForSelector(
+  //     'div.node-controls__item.node-controls__item_type_download > div > button > span'
+  //   );
+  //   let button = await page.$(
+  //     'div.node-controls__item.node-controls__item_type_download > div > button > span'
+  //   );
+  //await button?.evaluate((b: any) => b.click());
+
+  const res = await page.evaluate((atrribute) => {
+    return atrribute;
+    return fetch(atrribute, {
+      method: 'GET',
+      credentials: 'include',
+    }).then((r) => r.blob());
+  }, atrribute);
+
+  console.log(res);
+
+  if (!fs.existsSync(`./downloads/${tempFolder}`)) {
+    fs.mkdirSync(`./downloads/${tempFolder}`);
+  }
+
+  fs.createWriteStream(`./downloads/${tempFolder}/test.mkv`)
+    .write(res.stream())
+    .then(() => {
+      console.log('done');
+    });
+
+  await sleep(25000);
+
+  console.log(2);
+
+  let files = findFileByExt(`./downloads/${tempFolder}/`, 'crdownload');
+  if (files.length == 0) {
+    files = findFileByExt(`./downloads/${tempFolder}/`, 'mkv');
+  }
+  console.log(files);
+  await sleep(5000);
 
   await Promise.all(
     files.map((file) =>
       checkExistsWithTimeout(file.replace('.crdownload', ''), 990000)
     )
   );
+  console.log(4);
 
   //console.log(findFileByExt('./downloads/temp/', 'crdownload'));
   let filemove: string = '';
@@ -240,10 +319,9 @@ export async function downloadDropFiles(url: string, tempFolder: number) {
       '.' +
       file.replace('.crdownload', '').split('.').pop();
 
-    moveFile(
-      process.cwd() + '/' + file.replace('.crdownload', ''),
-      process.cwd() + '/' + filemove
-    );
+    console.log(filemove);
+
+    moveFile(process.cwd() + '/' + file, process.cwd() + '/' + filemove);
   });
 
   fs.rmSync(`./downloads/${tempFolder}/`, { recursive: true, force: true });
