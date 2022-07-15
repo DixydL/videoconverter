@@ -18,6 +18,7 @@
     "axios": "^0.26.1",
     "cloudconvert": "^2.3.0",
     "fluent-ffmpeg": "^2.1.2",
+    "global-tunnel-ng": "^2.7.1",
     "node-pre-gyp": "^0.17.0",
     "node-torrent": "^0.2.2",
     "nyaapi": "^2.4.3",

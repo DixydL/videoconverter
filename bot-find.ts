@@ -3,6 +3,15 @@ import { trim } from './helper/function';
 const { si } = require('nyaapi')
 var stringSimilarity = require("string-similarity");
 
+var globalTunnel = require('global-tunnel-ng');
+
+globalTunnel.initialize({
+    host: '186.97.182.5',
+    port: 999,
+    // proxyAuth: 'userId:password', // optional authentication
+    // sockets: 50 // optional pool size for each http and https
+});
+
 
 interface MyContext extends Context {
     myProp?: string;
