@@ -13,6 +13,34 @@ export async function sleep(ms: number) {
   });
 }
 
+export function trim(val: string) {
+  return val.replace(/[\[\]]/g, "").replace("10Bit", "").replace("1080p", "");
+}
+
+export async function mergeMkv(fileInput: string, soundInput: string): Promise<string> {
+  const filePath = `./merged/${path.basename(fileInput)}`;
+
+  return await new Promise((resolve, reject) => {
+    ffmpeg(fs.createReadStream(fileInput), options)
+      .output(filePath, { end: true })
+      .addOptions(["-i " + `${soundInput.replace(" ", "%20")}`, "-c:v copy", "-c:a aac", "-map 0:v:0", "-map 1:a:0"])
+      .on('end', () => {
+        console.log('Finished processing'), resolve(filePath);
+      })
+      .on('error', (progress: any) => {
+        console.log(progress);
+
+        reject(new Error('mkv немає субтитрів'));
+      })
+      .on('progress', (progress: any) => {
+        console.log(progress);
+      })
+      .run();
+  });
+
+  return filePath;
+}
+
 export function findFileByExt(folderPath: string, ext: string) {
   var files = fs.readdirSync(folderPath);
   var result: string[] = [];
@@ -214,15 +242,15 @@ export async function getLink(filePath: string): Promise<string> {
   return link;
 }
 
-export async function downloadTelegram(url: any, ext = 'torrent') {
+export async function downloadTelegram(url: any, name: string = "", ext = 'torrent') {
   return axios({ url: url.href, responseType: 'stream' }).then(
     (response: any) => {
       return new Promise((resolve, reject) => {
-        const name = `${randomstring.generate()}.${ext}`;
+        //const name = `${randomstring.generate()}.${ext}`;
         response.data
-          .pipe(fs.createWriteStream('./output/' + name))
-          .on('finish', () => resolve(name))
-          .on('error', (e: any) => {});
+          .pipe(fs.createWriteStream('./out/' + name))
+          .on('finish', () => resolve('./out/' + name))
+          .on('error', (e: any) => { });
       });
     }
   );

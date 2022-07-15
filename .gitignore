@@ -1,3 +1,9 @@
 node_modules
 **/node_modules
 dist
+session
+merged
+out
+torrent
+test.ogg
+file.ass

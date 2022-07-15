@@ -3,8 +3,6 @@ const fs = require('fs');
 import { Context, Telegraf } from 'telegraf';
 import {
   downloadDropFiles,
-  downloadFromTorrent,
-  downloadTelegram,
   runStart,
 } from './helper/function';
 
