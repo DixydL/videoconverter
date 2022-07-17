@@ -49,9 +49,17 @@ bot.on('text', async (ctx) => {
     if (!titles[matches.bestMatchIndex]) {
         ctx.reply(`Незнайдено`);
     } else {
+        let magnet: string = titles[matches.bestMatchIndex].magnet;
+
         ctx.reply(`${titles[matches.bestMatchIndex].name}`, Markup.inlineKeyboard(
             [
-                Markup.button.url("Magnet(soon)", titles[matches.bestMatchIndex].torrent),
+                Markup.button.url(
+                    "Magnet(soon)",
+                    magnet.replace(
+                        "magnet:?xt=",
+                        "https://nyaasi.herokuapp.com/nyaamagnet/"
+                    ).split("&")[0]
+                ),
                 Markup.button.url("Torrent", titles[matches.bestMatchIndex].torrent
                 ),
             ],
