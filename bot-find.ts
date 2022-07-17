@@ -54,7 +54,7 @@ bot.on('text', async (ctx) => {
         ctx.reply(`${titles[matches.bestMatchIndex].name}`, Markup.inlineKeyboard(
             [
                 Markup.button.url(
-                    "Magnet(soon)",
+                    "Magnet",
                     magnet.replace(
                         "magnet:?xt=",
                         "https://nyaasi.herokuapp.com/nyaamagnet/"
