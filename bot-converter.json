@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "bot_convert",
+            "script": "npm",
+            "args" : "run bot_converter"
+        }
+    ]
+}

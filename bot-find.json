@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "bot-find",
+            "script": "npm",
+            "args" : "run bot_find"
+        }
+    ]
+}
