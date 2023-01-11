@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "bot_breakdown",
+            "script": "npm",
+            "args" : "run bot_breakdown"
+        }
+    ]
+}
