@@ -7,8 +7,8 @@
     "online_compile": "tsc && node dist/online-convert.js",
     "compile_converter": "tsc && node dist/convert.js",
     "dev": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile\"",
-    "bot_find": "npm run compile_bot_find",
-    "bot_converter": "npm run compile_bot_converter",
+    "bot_find": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile_bot_find\"",
+    "bot_converter": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile_bot_converter\"",
     "bot_breakdown": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile_bot_breakdown\"",
     "online": "npm run online_compile",
     "converter": "npm run compile_converter"
