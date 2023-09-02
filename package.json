@@ -1,6 +1,7 @@
 {
   "scripts": {
     "compile": "tsc && node dist/app.js",
+    "compile_inari-bot": "tsc && node dist/inari-bot.js",
     "compile_bot_find": "tsc && node dist/bot-find.js",
     "compile_bot_converter": "tsc && node dist/bot-converter.js",
     "compile_bot_breakdown": "tsc && node dist/bot-breakdown.js",
@@ -8,6 +9,7 @@
     "compile_converter": "tsc && node dist/convert.js",
     "dev": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile\"",
     "bot_find": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile_bot_find\"",
+    "bot_inari": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile_inari-bot\"",
     "bot_converter": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile_bot_converter\"",
     "bot_breakdown": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile_bot_breakdown\"",
     "online": "npm run online_compile",
@@ -39,7 +41,7 @@
     "@types/puppeteer": "^5.4.5",
     "input": "^1.0.1",
     "nodemon": "^2.0.15",
-    "telegram": "^2.9.8",
+    "telegram": "^2.18.24",
     "typescript": "^4.7.4"
   }
 }
