@@ -109,6 +109,7 @@ async function test() {
                   inviteUsers: true,
                   pinMessages: true,
                   addAdmins: true,
+                  manageTopics: true,
                 }),
                 rank: "admin",
               })
