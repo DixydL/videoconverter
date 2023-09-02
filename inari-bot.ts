@@ -1,14 +1,13 @@
 import { Api, TelegramClient } from "telegram";
-import { StoreSession, StringSession } from "telegram/sessions";
+import { StringSession } from "telegram/sessions";
 //@ts-ignore
 import input from "input";
 import { NewMessage, NewMessageEvent } from "telegram/events";
 import { topics } from "./datas/topics";
 import { sleep } from "./helper/function";
-import { MessageIDLike } from "telegram/define";
 const fs = require("fs");
 
-const systemGroup = "InariBot";
+const systemGroup = "Флудильня";
 
 async function createSystemTopics(client: any, sender: any) {
   for (const topic of topics) {
@@ -37,9 +36,7 @@ async function createSystemTopics(client: any, sender: any) {
 async function test() {
   const apiId = 9392229;
   const apiHash = "d1d89e0ea5427607fb11848f2b0f798c";
-  const stringSession = new StringSession(
-    ""
-  );
+  const stringSession = new StringSession("");
 
   (async () => {
     console.log("Loading interactive example...");
