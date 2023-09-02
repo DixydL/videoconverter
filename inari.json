@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "inari",
+            "script": "npm",
+            "args" : "run bot_inari"
+        }
+    ]
+}
