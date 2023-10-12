@@ -27,6 +27,7 @@ bot.on('document', async (ctx) => {
                 .then((url) => {
                     downloadTelegram(url, ctx.message.document.file_name).then((response) => {
                         var ass = fs.readFileSync(response, 'utf8');
+                        ass = ass.replace(/{/g, '[').replace(/}/g, ']');
                         var srt = `9999
 00:00:00,520 --> 00:00:00,990
 ...
